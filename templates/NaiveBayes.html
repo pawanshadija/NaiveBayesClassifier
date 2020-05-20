@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="./static/favicon.ico" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="./static/PapaParse/papaparse.min.js"></script>
+    <title>Naive Bayes Classifier</title>
+    <style>
+        .container {
+            padding-left: auto;
+            padding-right: auto;
+        }
+
+        .my-custom-scrollbar {
+            position: relative;
+            height: 400px;
+            overflow: auto;
+        }
+
+        .table-wrapper-scroll-y {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="NaiveBayes.html" method="POST">
+        <div class="container">
+            <h2 class="h2">Naive Bayes Classifier</h2><label class="label label-default">Iris Dataset</label><br><br>
+            <div class="form-group">
+                <div class="row">
+                    <h4>&nbsp;&nbsp; Select Dataset</h4>
+
+                    <div class="col-sm-11">
+                        <input type="file" id="selectData" name="selectData" class="form-control" accept=".csv"
+                            required />
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="button" id="loadData" name="loadData" class="btn btn-primary">Load</button>
+                    </div>
+                </div>
+            </div>
+            <div id="data" class="text-center table-wrapper-scroll-y my-custom-scrollbar">
+
+            </div><br>
+            <div class="row">
+                <div class="col-sm-2">
+                    <h4 class="h4">&nbsp;&nbsp; Data to Predict</h4>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" name="sl" id="sl" placeholder="Sepal Length" value={{sl}}>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" name="sw" id="sw" placeholder="Sepal Width" value={{sw}}>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" name="pl" id="pl" placeholder="Petal Length" value={{pl}}>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" name="pw" id="pw" placeholder="Petal Width" value={{pw}}>
+                </div>
+                <div class="col-sm-2">
+                    <input type="submit" class="btn btn-primary" value="Predict" id="predict" name="predict">
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-2">
+                    <h4 class="h4">&nbsp;&nbsp; Prediction</h4>
+                </div>
+                <div class="col-sm-4">
+                    <input class="form-control" type="text" name="flower_prediction" id="flower_prediction"
+                        placeholder="Predicted Flower" disabled value={{prediction_name}}>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+
+</html>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#loadData').on("click", function (e) {
+            e.preventDefault();
+            $('#selectData').parse({
+                config: {
+                    delimiter: "auto",
+                    complete: displayHTMLTable,
+                },
+                before: function (file, inputElem) {
+                    //console.log("Parsing file...", file);
+                },
+                error: function (err, file) {
+                    //console.log("ERROR:", err, file);
+                },
+                complete: function () {
+                    //console.log("Done with all files");
+                }
+            });
+        });
+
+        function displayHTMLTable(results) {
+            var table = "<table class='table table-responsive table-striped table-bordered'>";
+            var data = results.data;
+
+            for (i = 0; i < data.length; i++) {
+                table += "<tr>";
+                var row = data[i];
+                var cells = row.join(",").split(",");
+
+                for (j = 0; j < cells.length; j++) {
+                    table += "<td>";
+                    table += cells[j];
+                    table += "</th>";
+                }
+                table += "</tr>";
+            }
+            table += "</table>";
+            $("#data").html(table);
+        }
+    });
+</script>
